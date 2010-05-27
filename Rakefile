@@ -57,3 +57,5 @@ RDoc::Task.new do |rdoc|
   rdoc.rdoc_files.include('README*')
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
+
+# vim: syntax=ruby ts=4 et sw=4 sts=4
