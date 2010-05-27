@@ -45,12 +45,13 @@ task :to_blog => [:clobber_rdoc, :rdoc] do
     sh "rm -fr $git/blog/content/docs/epoxy && mv rdoc $git/blog/content/docs/epoxy"
 end
 
-require 'rake/rdoctask'
-Rake::RDocTask.new do |rdoc|
+require 'rdoc/task'
+RDoc::Task.new do |rdoc|
   version = File.exist?('VERSION') ? File.read('VERSION') : ""
 
   rdoc.rdoc_dir = 'rdoc'
   rdoc.title = "epoxy #{version}"
+  rdoc.main = "README.rdoc"
   rdoc.rdoc_files.include('README*')
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
