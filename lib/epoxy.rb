@@ -35,6 +35,8 @@ class Epoxy
                 |
                 " ( [^"\\]  |  ""  |  \\. )* "      (?# match strings surrounded by " )
                 |
+                ['"]                                (?# match a loose quote ) 
+                |
                 \?\??                               (?# match one or two question marks )
                 |
                 [^-/'"?]+                           (?# match all characters except ' " ? - and / )
