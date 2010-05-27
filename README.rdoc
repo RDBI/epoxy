@@ -1,6 +1,19 @@
-= epoxy
+= Epoxy - bind data to queries for any query language.
 
-Description goes here.
+Let me hit ya with some science!
+
+    ep = Epoxy.new("select * from foo where bar=?")
+    binds = %W[foo]
+    bound_query = ep.quote { |x| "'" + binds[x] + "'" }
+    "select * from foo where bar='foo'"
+
+Epoxy handles:
+
+* ? for numbered binds (named binds coming soon!)
+* ?? for a *real* question mark
+* '?' for a *real* question mark
+* comments, weird quoting styles (look at the "holy shit" test for examples)
+* not telling you how to quote your data. This solution works for any query language and any database.
 
 == Note on Patches/Pull Requests
  
