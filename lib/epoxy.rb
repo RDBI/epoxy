@@ -22,14 +22,10 @@ class Epoxy
     #
     # Probably not the easiest thing to deal with by itself. Use the standard
     # methods plox.
-    def self.parse_tokens(query)
+    def self.parse_tokens(query, comment_chars)
         query.scan(%r{
             (
-                -- .*                               (?# matches "--" style comments to the end of line or string )
-                |   -                                   (?# matches single "-" )
-                |
-                /[*] .*? [*]/                       (?# matches C-style comments )
-                |   /                                   (?# matches single slash )    
+                #{comment_chars}.*                               (?# matches "--" style comments to the end of line or string )
                 |
                 ' ( [^'\\]  |  ''  |  \\. )* '      (?# match strings surrounded by apostophes )
                 |
@@ -49,18 +45,22 @@ class Epoxy
     attr_reader :tokens
     # the original query, before quoting.
     attr_reader :query
+    # leader comment characters - defaults to SQL "--"
+    attr_reader :comment_chars
 
     #
-    # Takes a query as a string. The binding rules are as follows:
+    # Takes a query as a string and an optional regexp defining
+    # beginning-of-line comments. The binding rules are as follows:
     #
     # * ? for numbered binds (named binds coming soon!)
     # * ?? for a *real* question mark
     # * '?' for a *real* question mark
     # * comments, weird quoting styles are unaffected.
     #
-    def initialize(query)
+    def initialize(query, comment_chars=%r{--|//})
+        @comment_chars = comment_chars
         @query  = query
-        @tokens = self.class.parse_tokens(query) 
+        @tokens = self.class.parse_tokens(query, @comment_chars)
     end
 
     #
