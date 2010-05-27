@@ -41,4 +41,16 @@ class TestEpoxy < Test::Unit::TestCase
         ep = Epoxy.new("select * from foo where bar='?'")
         assert_equal("select * from foo where bar='?'", ep.quote { |x| "'foo'" })
     end
+
+    def test_05_comments
+        ep = Epoxy.new(%Q{
+                       -- a comment!
+                       select * from foo where bar=?
+                       }.strip)
+        
+        assert_equal(%Q{
+                       -- a comment!
+                       select * from foo where bar='foo'
+                     }.strip, ep.quote { |x| "'foo'" })
+    end
 end
