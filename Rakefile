@@ -10,6 +10,7 @@ begin
     gem.email = "erik@hollensbe.org"
     gem.homepage = "http://github.com/erikh/epoxy"
     gem.authors = ["Erik Hollensbe"]
+    gem.add_development_dependency 'rdoc'
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
   Jeweler::GemcutterTasks.new
