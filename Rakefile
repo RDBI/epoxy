@@ -41,6 +41,10 @@ task :test => :check_dependencies
 
 task :default => :test
 
+task :to_blog => [:clobber_rdoc, :rdoc] do
+    sh "rm -r $git/blog/content/docs/epoxy && mv rdoc $git/blog/content/docs/epoxy"
+end
+
 require 'rake/rdoctask'
 Rake::RDocTask.new do |rdoc|
   version = File.exist?('VERSION') ? File.read('VERSION') : ""

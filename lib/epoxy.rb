@@ -76,7 +76,7 @@ class Epoxy
         tokens.each do |part|
             case part
             when '?'
-                result << yield bind_pos
+                result << block.call(bind_pos)
                 bind_pos += 1
             when '??'
                 result << "?"
