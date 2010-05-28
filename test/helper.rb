@@ -9,4 +9,4 @@ require 'epoxy'
 class Test::Unit::TestCase
 end
 
-# vim: syntax=ruby ts=4 et sw=4 sts=4
+# vim: syntax=ruby ts=2 et sw=2 sts=2

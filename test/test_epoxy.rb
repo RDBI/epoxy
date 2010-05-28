@@ -1,154 +1,154 @@
 require 'helper'
 
 class TestEpoxy < Test::Unit::TestCase
-    def test_01_basic
-        ep = Epoxy.new("select * from foo where bar=?")
-        assert(ep)
-        assert_kind_of(Epoxy, ep)
+  def test_01_basic
+    ep = Epoxy.new("select * from foo where bar=?")
+    assert(ep)
+    assert_kind_of(Epoxy, ep)
 
-        assert_equal("select * from foo where bar='foo'", ep.quote { |x| "'foo'" })
-    end
+    assert_equal("select * from foo where bar='foo'", ep.quote { |x| "'foo'" })
+  end
 
-    def test_02_literal_question_mark
-        ep = Epoxy.new("select ?? from foo where bar=?")
-        assert_equal("select ? from foo where bar='foo'", ep.quote { |x| "'foo'" })
+  def test_02_literal_question_mark
+    ep = Epoxy.new("select ?? from foo where bar=?")
+    assert_equal("select ? from foo where bar='foo'", ep.quote { |x| "'foo'" })
 
-        ep = Epoxy.new("select ??? from foo where bar=?")
-        assert_equal("select ?'foo' from foo where bar='foo'", ep.quote { |x| "'foo'" })
+    ep = Epoxy.new("select ??? from foo where bar=?")
+    assert_equal("select ?'foo' from foo where bar='foo'", ep.quote { |x| "'foo'" })
 
-        ep = Epoxy.new("select ???? from foo where bar=?")
-        assert_equal("select ?? from foo where bar='foo'", ep.quote { |x| "'foo'" })
+    ep = Epoxy.new("select ???? from foo where bar=?")
+    assert_equal("select ?? from foo where bar='foo'", ep.quote { |x| "'foo'" })
 
-        ep = Epoxy.new("select ????? from foo where bar=?")
-        assert_equal("select ??'foo' from foo where bar='foo'", ep.quote { |x| "'foo'" })
+    ep = Epoxy.new("select ????? from foo where bar=?")
+    assert_equal("select ??'foo' from foo where bar='foo'", ep.quote { |x| "'foo'" })
 
-        ep = Epoxy.new("select '?' from foo where bar=?")
-        assert_equal("select '?' from foo where bar='foo'", ep.quote { |x| "'foo'" })
+    ep = Epoxy.new("select '?' from foo where bar=?")
+    assert_equal("select '?' from foo where bar='foo'", ep.quote { |x| "'foo'" })
 
-        ep = Epoxy.new("select '?'? from foo where bar=?")
-        assert_equal("select '?''foo' from foo where bar='foo'", ep.quote { |x| "'foo'" })
+    ep = Epoxy.new("select '?'? from foo where bar=?")
+    assert_equal("select '?''foo' from foo where bar='foo'", ep.quote { |x| "'foo'" })
 
-        ep = Epoxy.new("select '?''?' from foo where bar=?")
-        assert_equal("select '?''?' from foo where bar='foo'", ep.quote { |x| "'foo'" })
+    ep = Epoxy.new("select '?''?' from foo where bar=?")
+    assert_equal("select '?''?' from foo where bar='foo'", ep.quote { |x| "'foo'" })
 
-        ep = Epoxy.new("select ?'?' from foo where bar=?")
-        assert_equal("select 'foo''?' from foo where bar='foo'", ep.quote { |x| "'foo'" })
+    ep = Epoxy.new("select ?'?' from foo where bar=?")
+    assert_equal("select 'foo''?' from foo where bar='foo'", ep.quote { |x| "'foo'" })
 
-        ep = Epoxy.new("select ?'?'? from foo where bar=?")
-        assert_equal("select 'foo''?''foo' from foo where bar='foo'", ep.quote { |x| "'foo'" })
+    ep = Epoxy.new("select ?'?'? from foo where bar=?")
+    assert_equal("select 'foo''?''foo' from foo where bar='foo'", ep.quote { |x| "'foo'" })
 
-        ep = Epoxy.new("select '?'?'? from foo where bar=?")
-        assert_equal("select '?''foo'''foo' from foo where bar='foo'", ep.quote { |x| "'foo'" })
+    ep = Epoxy.new("select '?'?'? from foo where bar=?")
+    assert_equal("select '?''foo'''foo' from foo where bar='foo'", ep.quote { |x| "'foo'" })
 
-        ep = Epoxy.new("select '?'?'?' from foo where bar=?")
-        assert_equal("select '?''foo''?' from foo where bar='foo'", ep.quote { |x| "'foo'" })
+    ep = Epoxy.new("select '?'?'?' from foo where bar=?")
+    assert_equal("select '?''foo''?' from foo where bar='foo'", ep.quote { |x| "'foo'" })
 
-        ep = Epoxy.new("select '?'?? from foo where bar=?")
-        assert_equal("select '?'? from foo where bar='foo'", ep.quote { |x| "'foo'" })
+    ep = Epoxy.new("select '?'?? from foo where bar=?")
+    assert_equal("select '?'? from foo where bar='foo'", ep.quote { |x| "'foo'" })
 
-        ep = Epoxy.new("select '?'??? from foo where bar=?")
-        assert_equal("select '?'?'foo' from foo where bar='foo'", ep.quote { |x| "'foo'" })
+    ep = Epoxy.new("select '?'??? from foo where bar=?")
+    assert_equal("select '?'?'foo' from foo where bar='foo'", ep.quote { |x| "'foo'" })
 
-        ep = Epoxy.new("select ??'?'??? from foo where bar=?")
-        assert_equal("select ?'?'?'foo' from foo where bar='foo'", ep.quote { |x| "'foo'" })
+    ep = Epoxy.new("select ??'?'??? from foo where bar=?")
+    assert_equal("select ?'?'?'foo' from foo where bar='foo'", ep.quote { |x| "'foo'" })
 
-        ep = Epoxy.new("select ???'?'??? from foo where bar=?")
-        assert_equal("select ?'foo''?'?'foo' from foo where bar='foo'", ep.quote { |x| "'foo'" })
+    ep = Epoxy.new("select ???'?'??? from foo where bar=?")
+    assert_equal("select ?'foo''?'?'foo' from foo where bar='foo'", ep.quote { |x| "'foo'" })
 
-        ep = Epoxy.new("select ''? from foo where bar=?")
-        assert_equal("select '''foo' from foo where bar='foo'", ep.quote { |x| "'foo'" })
+    ep = Epoxy.new("select ''? from foo where bar=?")
+    assert_equal("select '''foo' from foo where bar='foo'", ep.quote { |x| "'foo'" })
 
-        ep = Epoxy.new("select '''? from foo where bar=?")
-        assert_equal("select ''''foo' from foo where bar='foo'", ep.quote { |x| "'foo'" })
+    ep = Epoxy.new("select '''? from foo where bar=?")
+    assert_equal("select ''''foo' from foo where bar='foo'", ep.quote { |x| "'foo'" })
 
-        ep = Epoxy.new("select ''?' from foo where bar=?")
-        assert_equal("select '''foo'' from foo where bar='foo'", ep.quote { |x| "'foo'" })
+    ep = Epoxy.new("select ''?' from foo where bar=?")
+    assert_equal("select '''foo'' from foo where bar='foo'", ep.quote { |x| "'foo'" })
 
-        ep = Epoxy.new("select ''?'' from foo where bar=?")
-        assert_equal("select '''foo''' from foo where bar='foo'", ep.quote { |x| "'foo'" })
+    ep = Epoxy.new("select ''?'' from foo where bar=?")
+    assert_equal("select '''foo''' from foo where bar='foo'", ep.quote { |x| "'foo'" })
 
-        ep = Epoxy.new("select ''??' from foo where bar=?")
-        assert_equal("select ''?' from foo where bar='foo'", ep.quote { |x| "'foo'" })
+    ep = Epoxy.new("select ''??' from foo where bar=?")
+    assert_equal("select ''?' from foo where bar='foo'", ep.quote { |x| "'foo'" })
 
-        ep = Epoxy.new("select '?''?' from foo where bar=?")
-        assert_equal("select '?''?' from foo where bar='foo'", ep.quote { |x| "'foo'" })
+    ep = Epoxy.new("select '?''?' from foo where bar=?")
+    assert_equal("select '?''?' from foo where bar='foo'", ep.quote { |x| "'foo'" })
 
-        ep = Epoxy.new("select '?'''?' from foo where bar=?")
-        assert_equal("select '?''''foo'' from foo where bar='foo'", ep.quote { |x| "'foo'" })
+    ep = Epoxy.new("select '?'''?' from foo where bar=?")
+    assert_equal("select '?''''foo'' from foo where bar='foo'", ep.quote { |x| "'foo'" })
 
-        ep = Epoxy.new("select '?''''?' from foo where bar=?")
-        assert_equal("select '?''''?' from foo where bar='foo'", ep.quote { |x| "'foo'" })
+    ep = Epoxy.new("select '?''''?' from foo where bar=?")
+    assert_equal("select '?''''?' from foo where bar='foo'", ep.quote { |x| "'foo'" })
 
-        ep = Epoxy.new("select '??' from foo where bar=?")
-        assert_equal("select '??' from foo where bar='foo'", ep.quote { |x| "'foo'" })
+    ep = Epoxy.new("select '??' from foo where bar=?")
+    assert_equal("select '??' from foo where bar='foo'", ep.quote { |x| "'foo'" })
 
-        ep = Epoxy.new("select '???' from foo where bar=?")
-        assert_equal("select '???' from foo where bar='foo'", ep.quote { |x| "'foo'" })
+    ep = Epoxy.new("select '???' from foo where bar=?")
+    assert_equal("select '???' from foo where bar='foo'", ep.quote { |x| "'foo'" })
 
-        ep = Epoxy.new("select ''???' from foo where bar=?")
-        assert_equal("select ''?'foo'' from foo where bar='foo'", ep.quote { |x| "'foo'" })
-    end
+    ep = Epoxy.new("select ''???' from foo where bar=?")
+    assert_equal("select ''?'foo'' from foo where bar='foo'", ep.quote { |x| "'foo'" })
+  end
 
-    def test_03_quotes_already
-        ep = Epoxy.new("select * from \"foo\" where bar=?")
-        assert_equal("select * from \"foo\" where bar='foo'", ep.quote { |x| "'foo'" })
+  def test_03_quotes_already
+    ep = Epoxy.new("select * from \"foo\" where bar=?")
+    assert_equal("select * from \"foo\" where bar='foo'", ep.quote { |x| "'foo'" })
 
-        ep = Epoxy.new("select * from 'foo' where bar=?")
-        assert_equal("select * from 'foo' where bar='foo'", ep.quote { |x| "'foo'" })
-    end
+    ep = Epoxy.new("select * from 'foo' where bar=?")
+    assert_equal("select * from 'foo' where bar='foo'", ep.quote { |x| "'foo'" })
+  end
 
-    def test_04_holy_shit
-        ep = Epoxy.new("select * from \"'foo'\" where bar=?")
-        assert_equal("select * from \"'foo'\" where bar='foo'", ep.quote { |x| "'foo'" })
+  def test_04_holy_shit
+    ep = Epoxy.new("select * from \"'foo'\" where bar=?")
+    assert_equal("select * from \"'foo'\" where bar='foo'", ep.quote { |x| "'foo'" })
 
-        ep = Epoxy.new("select * from E\"'foo'\" where bar=?")
-        assert_equal("select * from E\"'foo'\" where bar='foo'", ep.quote { |x| "'foo'" })
+    ep = Epoxy.new("select * from E\"'foo'\" where bar=?")
+    assert_equal("select * from E\"'foo'\" where bar='foo'", ep.quote { |x| "'foo'" })
 
-        ep = Epoxy.new("select * from E\"''foo''\" where bar=?")
-        assert_equal("select * from E\"''foo''\" where bar='foo'", ep.quote { |x| "'foo'" })
+    ep = Epoxy.new("select * from E\"''foo''\" where bar=?")
+    assert_equal("select * from E\"''foo''\" where bar='foo'", ep.quote { |x| "'foo'" })
 
-        ep = Epoxy.new("select * from E\"\\''foo''\" where bar=?")
-        assert_equal("select * from E\"\\''foo''\" where bar='foo'", ep.quote { |x| "'foo'" })
+    ep = Epoxy.new("select * from E\"\\''foo''\" where bar=?")
+    assert_equal("select * from E\"\\''foo''\" where bar='foo'", ep.quote { |x| "'foo'" })
 
-        ep = Epoxy.new("select * from E\"\\''foo\\''\" where bar=?")
-        assert_equal("select * from E\"\\''foo\\''\" where bar='foo'", ep.quote { |x| "'foo'" })
+    ep = Epoxy.new("select * from E\"\\''foo\\''\" where bar=?")
+    assert_equal("select * from E\"\\''foo\\''\" where bar='foo'", ep.quote { |x| "'foo'" })
 
-        ep = Epoxy.new("select * from foo where bar='?'")
-        assert_equal("select * from foo where bar='?'", ep.quote { |x| "'foo'" })
-    end
+    ep = Epoxy.new("select * from foo where bar='?'")
+    assert_equal("select * from foo where bar='?'", ep.quote { |x| "'foo'" })
+  end
 
-    def test_05_comments
-        ep = Epoxy.new(%Q{
+  def test_05_comments
+    ep = Epoxy.new(%Q{
                        -- a comment?!
                        select * from foo where bar=?
                        }.strip)
 
-        assert_equal(%Q{
+                       assert_equal(%Q{
                        -- a comment?!
                        select * from foo where bar='foo'
                      }.strip, ep.quote { |x| "'foo'" })
-        
-        ep = Epoxy.new(%Q{
+
+                     ep = Epoxy.new(%Q{
                        // a comment?!
                        select * from foo where bar=?
                        }.strip)
 
-        assert_equal(%Q{
+                       assert_equal(%Q{
                        // a comment?!
                        select * from foo where bar='foo'
                      }.strip, ep.quote { |x| "'foo'" })
-        
-        ep = Epoxy.new(%Q{
+
+                     ep = Epoxy.new(%Q{
                        # a comment!
                        select * from foo where bar=?
                        }.strip, %r{#})
-        
-        assert_equal(%Q{
+
+                       assert_equal(%Q{
                        # a comment!
                        select * from foo where bar='foo'
                      }.strip, ep.quote { |x| "'foo'" })
 
-    end
+  end
 end
 
-# vim: syntax=ruby ts=4 et sw=4 sts=4
+# vim: syntax=ruby ts=2 et sw=2 sts=2
