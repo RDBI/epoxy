@@ -10,20 +10,20 @@ Let me hit ya with some science!
 
     # named binds
     binds = { :name => 'Lee', :age => 132 }
-    ep = Epoxy.new("select * from people where name=:name and age=:age")
+    ep = Epoxy.new("select * from people where name=?name and age=?age")
     bound_query = ep.quote(binds) { |x| "'#{x}'" }
     "select * from people where name='Lee' and age='132'"
 
     # dont mix them!
     binds = { :name => 'Lee' }
-    ep = Epoxy.new("select * from people where name=:name and age=?")
+    ep = Epoxy.new("select * from people where name=?name and age=?")
     bound_query = ep.quote(binds) { |x| "'#{x}'" }
     "select * from people where name='Lee' and age=?"
 
 
 Epoxy handles:
 
-* :<name> for named binds
+* ?<name> for named binds
 * ? for numbered binds
 * ?? for a *real* question mark
 * '?' for a *real* question mark

@@ -153,27 +153,39 @@ class TestEpoxy < Test::Unit::TestCase
   def test_06_named_binds
     binds = { :foo => 'bar', "bar" => 'baz', "void" => 'unused' }
 
-    ep = Epoxy.new("select * from 'foo' where bar=:foo and baz=:bar")
+    ep = Epoxy.new("select * from 'foo' where bar=?foo and baz=?bar")
     assert_equal(
       "select * from 'foo' where bar='bar' and baz='baz'", 
       ep.quote(binds) { |x| "'#{x}'" }
     )
     
-    ep = Epoxy.new("select * from 'foo' where bar='foo :bar' and baz=:bar")
+    ep = Epoxy.new("select * from 'foo' where bar='foo ?bar' and baz=?bar")
     assert_equal(
-      "select * from 'foo' where bar='foo :bar' and baz='baz'", 
+      "select * from 'foo' where bar='foo ?bar' and baz='baz'", 
       ep.quote(binds) { |x| "'#{x}'" }
     )
 
-    ep = Epoxy.new("select * from 'foo' where bar=:foo and baz=?")
+    ep = Epoxy.new("select * from 'foo' where bar=?foo and baz=?")
     assert_equal(
       "select * from 'foo' where bar='bar' and baz=?",
       ep.quote(binds) { |x| "'#{x}'" }
     )
 
-    ep = Epoxy.new("select * from 'foo' where bar=':foo' and baz=':baz'")
+    ep = Epoxy.new("select * from 'foo' where bar='?foo' and baz='?baz'")
     assert_equal(
-      "select * from 'foo' where bar=':foo' and baz=':baz'",
+      "select * from 'foo' where bar='?foo' and baz='?baz'",
+      ep.quote(binds) { |x| "'#{x}'" }
+    )
+
+    ep = Epoxy.new("select * from 'foo' where bar=?foo and baz=?foo")
+    assert_equal(
+      "select * from 'foo' where bar='bar' and baz='bar'",
+      ep.quote(binds) { |x| "'#{x}'" }
+    )
+
+    ep = Epoxy.new("select * from 'foo' where bar=??")
+    assert_equal(
+      "select * from 'foo' where bar=??",
       ep.quote(binds) { |x| "'#{x}'" }
     )
   end

@@ -10,11 +10,11 @@
 #
 #    # named binds
 #    binds = { :name => 'Lee', :age => 132 }
-#    ep = Epoxy.new("select * from people where name=:name and age=:age")
+#    ep = Epoxy.new("select * from people where name=?name and age=?age")
 #    bound_query = ep.quote(binds) { |x| "'#{x}'" }
 #    "select * from people where name='Lee' and age='132'"
 #
-#    # dont mix them!
+#    # don't mix them!
 #    binds = { :name => 'Lee' }
 #    ep = Epoxy.new("select * from people where name=:name and age=?")
 #    bound_query = ep.quote(binds) { |x| "'#{x}'" }
@@ -22,7 +22,7 @@
 # 
 # Epoxy handles:
 # 
-# * :<name> for named binds
+# * ?<name> for named binds
 # * ? for numbered binds
 # * ?? for a *real* question mark
 # * '?' for a *real* question mark
@@ -47,7 +47,7 @@ class Epoxy
         |
         ['"]                                (?# match a loose quote ) 
         |         
-        :[a-z]+                             (?# match a named bind )
+        \?[a-zA-Z]+                         (?# match a named bind )
         |
         \?\??                               (?# match one or two question marks )
         |
@@ -67,7 +67,7 @@ attr_reader :comment_chars
 # Takes a query as a string and an optional regexp defining
 # beginning-of-line comments. The binding rules are as follows:
 #
-# * :<name> for named binds
+# * ?<name> for named binds
 # * ? for numbered binds
 # * ?? for a *real* question mark
 # * '?' for a *real* question mark
@@ -98,7 +98,7 @@ def quote(binds = {}, &block)
   unless binds.empty?
     tokens.each do |token|
       binds.each do |key, rep|
-        if token == ":#{key}"
+        if token == "?#{key}"
           token.replace block.call(rep)
         end
       end
