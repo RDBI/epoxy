@@ -1,15 +1,29 @@
 # = Epoxy - bind data to queries for any query language.
 # 
 # Let me hit ya with some science!
-# 
-#     ep = Epoxy.new("select * from foo where bar=?")
-#     binds = %W[foo]
-#     bound_query = ep.quote { |x| "'" + binds[x] + "'" }
-#     "select * from foo where bar='foo'"
+#
+#    # numbered binds
+#    ep = Epoxy.new("select * from foo where bar=?")
+#    binds = %W[foo]
+#    bound_query = ep.quote { |x| "'" + binds[x] + "'" }
+#    "select * from foo where bar='foo'"
+#
+#    # named binds
+#    binds = { :name => 'Lee', :age => 132 }
+#    ep = Epoxy.new("select * from people where name=:name and age=:age")
+#    bound_query = ep.quote(binds) { |x| "'#{x}'" }
+#    "select * from people where name='Lee' and age='132'"
+#
+#    # dont mix them!
+#    binds = { :name => 'Lee' }
+#    ep = Epoxy.new("select * from people where name=:name and age=?")
+#    bound_query = ep.quote(binds) { |x| "'#{x}'" }
+#    "select * from people where name='Lee' and age=?"
 # 
 # Epoxy handles:
 # 
-# * ? for numbered binds (named binds coming soon!)
+# * :<name> for named binds
+# * ? for numbered binds
 # * ?? for a *real* question mark
 # * '?' for a *real* question mark
 # * comments, weird quoting styles (look at the "holy shit" test for examples)
@@ -53,7 +67,8 @@ attr_reader :comment_chars
 # Takes a query as a string and an optional regexp defining
 # beginning-of-line comments. The binding rules are as follows:
 #
-# * ? for numbered binds (named binds coming soon!)
+# * :<name> for named binds
+# * ? for numbered binds
 # * ?? for a *real* question mark
 # * '?' for a *real* question mark
 # * comments, weird quoting styles are unaffected.
@@ -66,9 +81,13 @@ end
 
 #
 # Processes your query for quoting. Provide a block that emulates how your
-# data should be quoted, and it will yield on each successive bound element
-# with the index of that element passed.
+# data should be quoted. This method accepts a Hash to process named bindings,
+# which when provided will yield each successive Hash value whos key matches
+# that of each named bind. 
 #
+# Without a Hash it will yield on each successive bound element
+# with the index of that element passed.
+# 
 # *You* are responsible for quoting your data properly. Epoxy just makes it
 # easier to get the places you need to quote out of the query.
 #
