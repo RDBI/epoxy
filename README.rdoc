@@ -14,7 +14,7 @@ Let me hit ya with some science!
     bound_query = ep.quote(binds) { |x| "'#{x}'" }
     "select * from people where name='Lee' and age='132'"
 
-    # dont mix them!
+    # don't mix them!
     binds = { :name => 'Lee' }
     ep = Epoxy.new("select * from people where name=?name and age=?")
     bound_query = ep.quote(binds) { |x| "'#{x}'" }
