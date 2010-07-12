@@ -149,6 +149,35 @@ class TestEpoxy < Test::Unit::TestCase
                      }.strip, ep.quote { |x| "'foo'" })
 
   end
+
+  def test_06_named_binds
+    binds = { :foo => 'bar', "bar" => 'baz', "void" => 'unused' }
+
+    ep = Epoxy.new("select * from 'foo' where bar=:foo and baz=:bar")
+    assert_equal(
+      "select * from 'foo' where bar='bar' and baz='baz'", 
+      ep.quote(binds) { |x| "'#{x}'" }
+    )
+    
+    ep = Epoxy.new("select * from 'foo' where bar='foo :bar' and baz=:bar")
+    assert_equal(
+      "select * from 'foo' where bar='foo :bar' and baz='baz'", 
+      ep.quote(binds) { |x| "'#{x}'" }
+    )
+
+    ep = Epoxy.new("select * from 'foo' where bar=:foo and baz=?")
+    assert_equal(
+      "select * from 'foo' where bar='bar' and baz=?",
+      ep.quote(binds) { |x| "'#{x}'" }
+    )
+
+    ep = Epoxy.new("select * from 'foo' where bar=':foo' and baz=':baz'")
+    assert_equal(
+      "select * from 'foo' where bar=':foo' and baz=':baz'",
+      ep.quote(binds) { |x| "'#{x}'" }
+    )
+  end
+    
 end
 
 # vim: syntax=ruby ts=2 et sw=2 sts=2
