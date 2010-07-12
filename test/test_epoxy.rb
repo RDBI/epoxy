@@ -195,6 +195,12 @@ class TestEpoxy < Test::Unit::TestCase
       "select * from 'foo' where bar=?bar",
       ep.quote(binds, &yarrr)
     )
+
+    ep = Epoxy.new("select * from 'foo' where bar=?notfound")
+    assert_equal(
+      "select * from 'foo' where bar=?notfound",
+      ep.quote(binds, &yarrr)
+    )
   end
     
 end
