@@ -2,14 +2,29 @@
 
 Let me hit ya with some science!
 
+    # numbered binds
     ep = Epoxy.new("select * from foo where bar=?")
     binds = %W[foo]
     bound_query = ep.quote { |x| "'" + binds[x] + "'" }
     "select * from foo where bar='foo'"
 
+    # named binds
+    binds = { :name => 'Lee', :age => 132 }
+    ep = Epoxy.new("select * from people where name=:name and age=:age")
+    bound_query = ep.quote(binds) { |x| "'#{x}'" }
+    "select * from people where name='Lee' and age='132'"
+
+    # dont mix them!
+    binds = { :name => 'Lee' }
+    ep = Epoxy.new("select * from people where name=:name and age=?")
+    bound_query = ep.quote(binds) { |x| "'#{x}'" }
+    "select * from people where name='Lee' and age=?"
+
+
 Epoxy handles:
 
-* ? for numbered binds (named binds coming soon!)
+* :<name> for named binds
+* ? for numbered binds
 * ?? for a *real* question mark
 * '?' for a *real* question mark
 * comments, weird quoting styles (look at the "holy shit" test for examples)
