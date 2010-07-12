@@ -82,8 +82,8 @@ class Epoxy
   #
   # Processes your query for quoting. Provide a block that emulates how your
   # data should be quoted. This method accepts a Hash to process named bindings,
-  # which when provided will yield each successive Hash value whos key matches
-  # that of each named bind. 
+  # which when provided will yield each successive Hash key which has a match
+  # in the named binds. <b>Keys are coerced to symbols before being yielded.</b>
   #
   # Without a Hash it will yield on each successive bound element
   # with the index of that element passed.
@@ -99,12 +99,10 @@ class Epoxy
       tokens.each do |token|
         binds.each do |key, rep|
           if token == "?#{key}"
-            token.replace block.call(rep)
+            token.replace block.call(key.to_sym)
           end
         end
       end
-
-      return tokens.join
     end
 
     tokens.each do |part|
