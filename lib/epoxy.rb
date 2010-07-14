@@ -103,6 +103,7 @@ class Epoxy
         binds.each do |key, rep|
           if token == "?#{key}"
             token.replace block.call(key.to_sym)
+            bind_pos += 1
           end
         end
       end
