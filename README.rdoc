@@ -22,7 +22,7 @@
  
  Epoxy handles:
  
- * ?<name> for named binds (alphabet characters and hyphens)
+ * ?<name> for named binds 
  * ? for numbered binds
  * ?? for a *real* question mark
  * '?' for a *real* question mark

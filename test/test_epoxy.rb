@@ -151,7 +151,7 @@ class TestEpoxy < Test::Unit::TestCase
   end
 
   def test_06_named_binds
-    binds = { 0 => "test", 1 => "test2", :foo => 'bar', "bar" => 'baz', "foo-bar" => "foobar", "void" => 'unused' }
+    binds = { 0 => "test", 1 => "test2", :foo => 'bar', "bar" => 'baz', "void" => 'unused' }
     yarrr = proc { |x| "'#{binds[x] || binds[x.to_s]}'" }
 
     ep = Epoxy.new("select * from 'foo' where bar=?foo and baz=?bar")
@@ -205,12 +205,6 @@ class TestEpoxy < Test::Unit::TestCase
     ep = Epoxy.new("select * from 'foo' where bar=?foo and baz = ?")
     assert_equal(
       "select * from 'foo' where bar='bar' and baz = 'test2'",
-      ep.quote(binds, &yarrr)
-    )
-
-    ep = Epoxy.new("select * from 'foo' where bar=?foo-bar")
-    assert_equal(
-      "select * from 'foo' where bar='foobar'",
       ep.quote(binds, &yarrr)
     )
   end

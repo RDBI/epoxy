@@ -22,7 +22,7 @@
 # 
 # Epoxy handles:
 # 
-# * ?<name> for named binds (alphabet characters and hypens)
+# * ?<name> for named binds
 # * ? for numbered binds
 # * ?? for a *real* question mark
 # * '?' for a *real* question mark
@@ -31,7 +31,7 @@
 #
 class Epoxy
 
-  LEGAL_NAMED_BIND = /[a-zA-Z\-]+/
+  LEGAL_NAMED_BIND = /[a-zA-Z]+/
 
   #
   # Token parser, isolates components of the query into parts to where they
@@ -40,7 +40,7 @@ class Epoxy
   # Probably not the easiest thing to deal with by itself. Use the standard
   # methods plox.
   def self.parse_tokens(query, comment_chars)
-    query.scan(%r{
+    a = query.scan(%r{
       (
         #{comment_chars}.*                  (?# matches "--" style comments to the end of line or string )
         |
@@ -70,7 +70,7 @@ class Epoxy
   # Takes a query as a string and an optional regexp defining
   # beginning-of-line comments. The binding rules are as follows:
   #
-  # * ?<name> for named binds (alphabet characters and hyphens)
+  # * ?<name> for named binds
   # * ? for numbered binds
   # * ?? for a *real* question mark
   # * '?' for a *real* question mark
