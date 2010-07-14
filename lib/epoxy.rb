@@ -98,16 +98,7 @@ class Epoxy
     result = ""
     bind_pos = 0
 
-    unless binds.empty?
-      tokens.each do |token|
-        binds.each do |key, rep|
-          if token == "?#{key}"
-            token.replace block.call(key.to_sym)
-            bind_pos += 1
-          end
-        end
-      end
-    end
+    binds = binds.keys.inject({}) { |x,y| x.merge({ y.kind_of?(String) ? y.to_sym : y => binds[y] }) }
 
     tokens.each do |part|
       case part
@@ -116,6 +107,14 @@ class Epoxy
         bind_pos += 1
       when '??'
         result << "?"
+      when /^\?(#{LEGAL_NAMED_BIND})$/
+        key = $1.to_sym
+        if binds[key]
+          result << block.call(key)
+          bind_pos += 1
+        else
+          result << part
+        end
       else
         result << part
       end
