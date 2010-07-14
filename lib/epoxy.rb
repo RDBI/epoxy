@@ -109,7 +109,7 @@ class Epoxy
         result << "?"
       when /^\?(#{LEGAL_NAMED_BIND})$/
         key = $1.to_sym
-        if binds[key]
+        if binds.has_key?(key)
           result << block.call(key)
           bind_pos += 1
         else
