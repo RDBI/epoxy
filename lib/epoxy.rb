@@ -54,7 +54,7 @@ class Epoxy
         |
         \?\??                               (?# match one or two question marks )
         |
-        [^-/'"?:]+                          (?# match all characters except ' " ? - : and / )
+        [^'"?]+                          (?# match all characters except ' " ? - : and / )
     )
     }x).collect(&:first)
   end

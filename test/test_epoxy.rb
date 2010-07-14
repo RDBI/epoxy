@@ -210,6 +210,17 @@ class TestEpoxy < Test::Unit::TestCase
       ep.indexed_binds
     )
   end
+
+  def test_08_meta_blackhole
+    str = "select 'some time'::TIMESTAMP"
+
+    ep = Epoxy.new "select 'some time'::TIMESTAMP"
+
+    assert_equal(
+      str,
+      ep.quote
+    )
+  end
 end
 
 # vim: syntax=ruby ts=2 et sw=2 sts=2
