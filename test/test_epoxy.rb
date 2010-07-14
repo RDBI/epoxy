@@ -202,7 +202,18 @@ class TestEpoxy < Test::Unit::TestCase
       ep.quote(binds, &yarrr)
     )
   end
-    
+
+  def test_07_indexed_binds
+    ep = Epoxy.new("select * from foo where bar=?bar and quux=? and foomatic=?foo")
+    assert_equal(
+      {
+        0 => :bar,
+        1 => nil,
+        2 => :foo
+      },
+      ep.indexed_binds
+    )
+  end
 end
 
 # vim: syntax=ruby ts=2 et sw=2 sts=2

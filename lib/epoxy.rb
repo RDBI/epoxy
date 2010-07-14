@@ -30,6 +30,9 @@
 # * not telling you how to quote your data. This solution works for any query language and any database.
 #
 class Epoxy
+
+  LEGAL_NAMED_BIND = /[a-zA-Z]+/
+
   #
   # Token parser, isolates components of the query into parts to where they
   # can be managed indepdently.
@@ -47,7 +50,7 @@ class Epoxy
         |
         ['"]                                (?# match a loose quote ) 
         |         
-        \?[a-zA-Z]+                         (?# match a named bind )
+        \?#{LEGAL_NAMED_BIND}               (?# match a named bind )
         |
         \?\??                               (?# match one or two question marks )
         |
@@ -118,6 +121,46 @@ class Epoxy
     end
 
     return result
+  end
+
+  #
+  # Returns a hash of position => name (as Symbol), if any, which correspond to
+  # binds located in the query. nil is provided as a name if it is an indexed
+  # bind already. This is useful for sanitizing features Epoxy has before
+  # sending them to the SQL engine.
+  #
+  # Ex: 
+  #   ep = Epoxy.new("select * from foo where bar=?bar and quux=? and foomatic=?foo")
+  #   ep.indexed_binds
+  #
+  #   # yields...
+  #
+  #   {
+  #     0 => :bar,
+  #     1 => nil,
+  #     2 => :foo
+  #   },
+  #
+  # *NOTE:* all syntax lookalikes are considered in this method; in
+  # the actual quote() routine, only named binds with a corresponding map are
+  # considered.
+  #
+  def indexed_binds
+    ary = []
+
+    tokens.each do |toke|
+      case toke 
+      when '?'
+        ary.push(toke)
+      when /\?(#{LEGAL_NAMED_BIND})/
+        ary.push($1.to_sym)
+      end
+    end
+
+    hash = { }
+    ary.each_with_index { |x, i| hash[i] = x == '?' ? nil : x }
+
+    return hash
   end
 end
 
