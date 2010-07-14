@@ -40,7 +40,7 @@ class Epoxy
   # Probably not the easiest thing to deal with by itself. Use the standard
   # methods plox.
   def self.parse_tokens(query, comment_chars)
-    a = query.scan(%r{
+    query.scan(%r{
       (
         #{comment_chars}.*                  (?# matches "--" style comments to the end of line or string )
         |
