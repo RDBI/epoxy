@@ -206,11 +206,7 @@ class TestEpoxy < Test::Unit::TestCase
   def test_07_indexed_binds
     ep = Epoxy.new("select * from foo where bar=?bar and quux=? and foomatic=?foo")
     assert_equal(
-      {
-        0 => :bar,
-        1 => nil,
-        2 => :foo
-      },
+      [ :bar, nil, :foo ],
       ep.indexed_binds
     )
   end

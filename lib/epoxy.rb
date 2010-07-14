@@ -134,12 +134,7 @@ class Epoxy
   #   ep.indexed_binds
   #
   #   # yields...
-  #
-  #   {
-  #     0 => :bar,
-  #     1 => nil,
-  #     2 => :foo
-  #   },
+  #   [ :bar, nil, :foo]
   #
   # *NOTE:* all syntax lookalikes are considered in this method; in
   # the actual quote() routine, only named binds with a corresponding map are
@@ -157,10 +152,9 @@ class Epoxy
       end
     end
 
-    hash = { }
-    ary.each_with_index { |x, i| hash[i] = x == '?' ? nil : x }
+    ary.map! { |x| x == '?' ? nil : x }
 
-    return hash
+    return ary
   end
 end
 
