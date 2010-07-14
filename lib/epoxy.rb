@@ -70,7 +70,7 @@ class Epoxy
   # Takes a query as a string and an optional regexp defining
   # beginning-of-line comments. The binding rules are as follows:
   #
-  # * ?<name> for named binds
+  # * ?<name> for named binds (alphabet characters and hyphens)
   # * ? for numbered binds
   # * ?? for a *real* question mark
   # * '?' for a *real* question mark
