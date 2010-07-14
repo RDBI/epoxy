@@ -31,7 +31,7 @@
 #
 class Epoxy
 
-  LEGAL_NAMED_BIND = /[a-zA-Z]+/
+  LEGAL_NAMED_BIND = /[a-zA-Z\-]+/
 
   #
   # Token parser, isolates components of the query into parts to where they
