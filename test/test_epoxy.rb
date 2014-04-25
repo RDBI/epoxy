@@ -1,4 +1,4 @@
-require 'helper'
+require './helper'
 
 class TestEpoxy < Test::Unit::TestCase
   def test_01_basic
@@ -121,12 +121,12 @@ class TestEpoxy < Test::Unit::TestCase
     ep = Epoxy.new(%Q{
                        -- a comment?!
                        select * from foo where bar=?
-                       }.strip)
+                     })
 
                        assert_equal(%Q{
                        -- a comment?!
                        select * from foo where bar='foo'
-                     }.strip, ep.quote { |x| "'foo'" })
+                     }, ep.quote { |x| "'foo'" })
 
                      ep = Epoxy.new(%Q{
                        // a comment?!
